@@ -3,8 +3,6 @@ mod scanner;
 mod tokens;
 
 use scanner::*;
-// use tokens::*;
-// use TokenType::*;[]
 
 use std::{
     env, fs,

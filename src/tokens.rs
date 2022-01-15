@@ -25,6 +25,7 @@ pub enum TokenType {
     EOF
 }
 
+
 #[derive(Debug, new)]
 pub struct Token{
     tok_type: TokenType,
