@@ -41,9 +41,9 @@ fn run_prompt() {
     }
 }
 fn run(code: &String) {
-    let mut s = Scanner::new(code.to_owned(), 0, 0, 0, Vec::new());
+    let mut s = Scanner::new(code.to_owned());
     s.scan_tokens();
-    println!("running...{:?}", s);
+    println!("{:?}", s);
     unsafe {
         
         HAD_ERROR = false;

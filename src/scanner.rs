@@ -6,7 +6,6 @@ use crate::{
     HAD_ERROR,
 };
 
-use derive_new::new;
 use std::fmt::Debug;
 use substring::Substring;
 
@@ -20,7 +19,7 @@ fn report(line: usize, wher: &str, msg: &str) {
     }
 }
 
-#[derive(Debug, new)]
+#[derive(Debug)]
 pub struct Scanner {
     source: String,
     line: usize,
@@ -28,7 +27,17 @@ pub struct Scanner {
     current: usize,
     tokens: Vec<Token>,
 }
+
 impl Scanner {
+    pub fn new(code: String) -> Scanner {
+        Scanner {
+            source: code,
+            line: 0,
+            start: 0,
+            current: 0,
+            tokens: Vec::new(),
+        }
+    }
     pub fn scan_tokens(&mut self) {
         while !self.is_at_end() {
             self.start = self.current;
@@ -41,9 +50,7 @@ impl Scanner {
     fn scan_token(&mut self) {
         let c: char = self.advance();
         match c {
-            ' '  | 
-            '\r' | 
-            '\t' => (),
+            ' ' | '\r' | '\t' => (),
             '\n' => self.line = self.line + 1,
             '(' => self.add_token(TokenType::LEFT_PAREN),
             ')' => self.add_token(TokenType::RIGHT_PAREN),
@@ -92,15 +99,18 @@ impl Scanner {
                     self.add_token(TokenType::SLASH);
                 }
             }
+            '"' => self.string(),
 
             _ => error(self.line, "Unexpected token."),
         }
     }
-
     fn add_token(&mut self, tt: TokenType) {
-        let txt = self.source.substring(self.start, self.current).to_string();
+        self.add_token_1(tt, "".to_string());
+    }
 
-        let token = Token::new(tt, txt, "".to_string(), self.line);
+    fn add_token_1(&mut self, tt: TokenType, literal: String) {
+        let txt = self.source.substring(self.start, self.current).to_string();
+        let token = Token::new(tt, txt, literal, self.line);
         self.tokens.push(token);
     }
     fn advance(&mut self) -> char {
@@ -120,11 +130,32 @@ impl Scanner {
         self.current = self.current + 1;
         return true;
     }
-
     fn peek(&mut self) -> char {
         if self.is_at_end() {
             return '\0';
         }
         return self.source.chars().nth(self.current).unwrap();
+    }
+    fn string(&mut self) {
+        while self.peek() != '"' && !self.is_at_end() {
+            
+            if self.peek() == '\n' {
+                self.line = self.line + 1;
+            }
+            self.advance();
+        }
+
+        if self.is_at_end() {
+            error(self.line, "Unterminated string.");
+            return;
+        }
+
+        self.advance();
+
+        let literal = self
+            .source
+            .substring(self.start + 1, self.current - 1)
+            .to_string();
+        self.add_token_1(TokenType::STRING, literal)
     }
 }
