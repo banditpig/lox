@@ -222,9 +222,7 @@ impl Scanner {
             TokenType::UNKNOWN  => tt = TokenType::IDENTIFIER,
             _ => (),
         }
-        // if (tt == TokenType::UNKNOWN ){
-        //     tt = TokenType::IDENTIFIER;
-        // }
+
         self.add_token(tt);
         
     }
