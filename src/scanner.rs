@@ -10,7 +10,6 @@ use std::fmt::Debug;
 use substring::Substring;
 
 fn error(line: usize, msg: &str) {
-    
     report(line, "", msg);
 }
 fn report(line: usize, wher: &str, msg: &str) {
@@ -50,6 +49,12 @@ impl Scanner {
 
     fn scan_token(&mut self) {
         let c: char = self.advance();
+
+        if self.is_alpha(c) {
+            self.identifier();
+            return;
+        }
+
         match c {
             ' ' | '\r' | '\t' => (),
             '\n' => self.line = self.line + 1,
@@ -102,8 +107,7 @@ impl Scanner {
             }
             '"' => self.string(),
 
-            '0' | '1' | '2'| '3'| '4'| '5'| '6'| '7'| '8'| '9'
-            => self.number(),
+            '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' => self.number(),
 
             _ => error(self.line, "Unexpected token."),
         }
@@ -142,7 +146,6 @@ impl Scanner {
     }
     fn string(&mut self) {
         while self.peek() != '"' && !self.is_at_end() {
-            
             if self.peek() == '\n' {
                 self.line = self.line + 1;
             }
@@ -165,34 +168,87 @@ impl Scanner {
 
     fn is_digit(&self, ch: char) -> bool {
         match ch {
-            '0' | '1' | '2'| '3'| '4'| '5'| '6'| '7'| '8'| '9' => return true,
-            _ => return false
+            '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' => return true,
+            _ => return false,
         }
     }
     fn number(&mut self) {
-        while self.is_digit(self.peek()){self.advance();}
+        while self.is_digit(self.peek()) {
+            self.advance();
+        }
 
         if self.peek() == '.' && self.is_digit(self.peek_next()) {
             self.advance();
 
-            while self.is_digit(self.peek()){self.advance();}
+            while self.is_digit(self.peek()) {
+                self.advance();
+            }
         }
 
-
         let literal = self
-        .source
-        .substring(self.start + 1, self.current - 1)
-        .to_string();
+            .source
+            .substring(self.start + 1, self.current - 1)
+            .to_string();
 
         self.add_token_1(TokenType::NUMBER, literal)
     }
 
     fn peek_next(&self) -> char {
-        
         if self.current + 1 >= self.source.len() {
             return '\0';
         }
-        return self.source.chars().nth(self.current + 1).unwrap()
+        return self.source.chars().nth(self.current + 1).unwrap();
+    }
+    fn is_alpha(&self, ch: char) -> bool {
+        return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || ch == '_';
+    }
 
+    fn is_alphanumeric(&self, ch: char) -> bool {
+        return self.is_digit(ch) || self.is_alpha(ch);
+    }
+
+    fn identifier(&mut self) {
+        while self.is_alphanumeric(self.peek()) {
+            self.advance();
+        }
+        let ident = self
+            .source
+            .substring(self.start , self.current )
+            .to_string();
+
+        let mut tt = self.resolve_identifier(&ident);
+
+        match tt {
+            TokenType::UNKNOWN  => tt = TokenType::IDENTIFIER,
+            _ => (),
+        }
+        // if (tt == TokenType::UNKNOWN ){
+        //     tt = TokenType::IDENTIFIER;
+        // }
+        self.add_token(tt);
+        
+    }
+
+    fn resolve_identifier(&self, ident: &str) -> TokenType {
+        println!("resolving {:?}", ident);
+        match ident {
+            "and"    => TokenType::AND,
+            "class"  => TokenType::CLASS,
+            "else"   => TokenType::ELSE,
+            "false"  => TokenType::FALSE,
+            "for"    => TokenType::FOR,
+            "fun"    => TokenType::FUN,
+            "if"     => TokenType::IF,
+            "nil"    => TokenType::NIL,
+            "or"     => TokenType::OR,
+            "print"  => TokenType::PRINT,
+            "return" => TokenType::RETURN,
+            "super"  => TokenType::SUPER,
+            "this"   => TokenType::THIS,
+            "true"   => TokenType::TRUE,
+            "var"    => TokenType::VAR,
+            "while"  => TokenType::WHILE,
+            _        => TokenType::UNKNOWN,
+        }
     }
 }
