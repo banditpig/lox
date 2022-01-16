@@ -10,6 +10,7 @@ use std::fmt::Debug;
 use substring::Substring;
 
 fn error(line: usize, msg: &str) {
+    
     report(line, "", msg);
 }
 fn report(line: usize, wher: &str, msg: &str) {
@@ -101,6 +102,9 @@ impl Scanner {
             }
             '"' => self.string(),
 
+            '0' | '1' | '2'| '3'| '4'| '5'| '6'| '7'| '8'| '9'
+            => self.number(),
+
             _ => error(self.line, "Unexpected token."),
         }
     }
@@ -130,7 +134,7 @@ impl Scanner {
         self.current = self.current + 1;
         return true;
     }
-    fn peek(&mut self) -> char {
+    fn peek(&self) -> char {
         if self.is_at_end() {
             return '\0';
         }
@@ -157,5 +161,38 @@ impl Scanner {
             .substring(self.start + 1, self.current - 1)
             .to_string();
         self.add_token_1(TokenType::STRING, literal)
+    }
+
+    fn is_digit(&self, ch: char) -> bool {
+        match ch {
+            '0' | '1' | '2'| '3'| '4'| '5'| '6'| '7'| '8'| '9' => return true,
+            _ => return false
+        }
+    }
+    fn number(&mut self) {
+        while self.is_digit(self.peek()){self.advance();}
+
+        if self.peek() == '.' && self.is_digit(self.peek_next()) {
+            self.advance();
+
+            while self.is_digit(self.peek()){self.advance();}
+        }
+
+
+        let literal = self
+        .source
+        .substring(self.start + 1, self.current - 1)
+        .to_string();
+
+        self.add_token_1(TokenType::NUMBER, literal)
+    }
+
+    fn peek_next(&self) -> char {
+        
+        if self.current + 1 >= self.source.len() {
+            return '\0';
+        }
+        return self.source.chars().nth(self.current + 1).unwrap()
+
     }
 }
