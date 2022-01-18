@@ -1,6 +1,7 @@
 #![allow(dead_code)]
 mod scanner;
 mod tokens;
+mod exprs;
 
 use scanner::*;
 
@@ -43,7 +44,7 @@ fn run_prompt() {
 fn run(code: &String) {
     let mut s = Scanner::new(code.to_owned());
     s.scan_tokens();
-    println!("{:?}", s);
+    
     unsafe {
         
         HAD_ERROR = false;

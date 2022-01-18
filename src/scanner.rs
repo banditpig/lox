@@ -250,3 +250,27 @@ impl Scanner {
         }
     }
 }
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn internal() {
+        let scnr = Scanner::new("".to_string());
+
+        let mut tt = scnr.resolve_identifier("and");
+        assert_eq!(TokenType::AND, tt);
+
+        tt = scnr.resolve_identifier("class");
+        assert_eq!(TokenType::CLASS, tt);
+
+        tt = scnr.resolve_identifier("else");
+        assert_eq!(TokenType::ELSE, tt);
+        // etc
+
+
+
+
+
+    }
+}

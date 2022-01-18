@@ -1,11 +1,10 @@
 
 
-
 use std::fmt::Debug;
 use derive_new::new;
 
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 #[allow(non_camel_case_types)]
 pub enum TokenType {
     
@@ -25,7 +24,12 @@ pub enum TokenType {
     EOF,
     UNKNOWN,
 }
+#[derive(Debug, PartialEq, Eq)]
+pub enum Literal {
+    NUMBER , STRING , TRUE, FALSE, NIL,
+}
 
+    
 
 #[derive(Debug, new)]
 pub struct Token{
