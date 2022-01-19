@@ -33,10 +33,10 @@ pub enum Literal {
 
 #[derive(Debug, new)]
 pub struct Token{
-    tok_type: TokenType,
-    lexeme: String,
-    literal: String,
-    line: usize,
+    pub tok_type: TokenType,
+    pub lexeme: String,
+    pub literal: String,
+    pub line: usize,
 }
 
 

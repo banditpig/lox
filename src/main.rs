@@ -1,9 +1,11 @@
 #![allow(dead_code)]
+mod exprs;
 mod scanner;
 mod tokens;
-mod exprs;
+use exprs::*;
 
 use scanner::*;
+use tokens::{Token, TokenType};
 
 use std::{
     env, fs,
@@ -11,6 +13,8 @@ use std::{
     process::exit,
 };
 static mut HAD_ERROR: bool = false;
+
+
 fn main() {
     let args: Vec<String> = env::args().collect();
     println!("{:?}", args);
@@ -44,9 +48,9 @@ fn run_prompt() {
 fn run(code: &String) {
     let mut s = Scanner::new(code.to_owned());
     s.scan_tokens();
-    
+
     unsafe {
-        
+
         HAD_ERROR = false;
     }
 }

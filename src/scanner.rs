@@ -268,9 +268,17 @@ mod tests {
         assert_eq!(TokenType::ELSE, tt);
         // etc
 
-
-
-
-
     }
+
+    #[test]
+    fn check_scanner(){
+        let mut scnr = Scanner::new("-123 * 45.67".to_string());
+        scnr.scan_tokens();
+        for tt in scnr.tokens{
+            println!("{:?}", tt) 
+        }
+       
+    }
+
+
 }
