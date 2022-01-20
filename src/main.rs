@@ -2,10 +2,9 @@
 mod exprs;
 mod scanner;
 mod tokens;
-use exprs::*;
+mod parser;
 
 use scanner::*;
-use tokens::{Token, TokenType};
 
 use std::{
     env, fs,

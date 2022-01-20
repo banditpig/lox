@@ -4,7 +4,7 @@ use std::fmt::Debug;
 use derive_new::new;
 
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 #[allow(non_camel_case_types)]
 pub enum TokenType {
     
@@ -31,7 +31,7 @@ pub enum Literal {
 
     
 
-#[derive(Debug, new)]
+#[derive(Debug, new, Clone)]
 pub struct Token{
     pub tok_type: TokenType,
     pub lexeme: String,
