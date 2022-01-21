@@ -1,6 +1,5 @@
 
-use crate::tokens::{Token};
-
+use crate::tokens::*;
 pub trait Visitor<T> {
     fn visit_binary(&mut self, left: &Expr, op: &Token, right: &Expr) -> T;
     fn visit_unary(&mut self, op: &Token, right: &Expr) -> T;

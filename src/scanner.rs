@@ -25,11 +25,11 @@ pub struct Scanner {
     line: usize,
     start: usize,
     current: usize,
-    tokens: Vec<Token>,
+    pub tokens: Vec<Token>,
 }
 
 impl Scanner {
-    pub fn new(code: String) -> Scanner {
+    pub fn new(code: String) -> Self {
         Scanner {
             source: code,
             line: 0,
@@ -187,7 +187,7 @@ impl Scanner {
 
         let literal = self
             .source
-            .substring(self.start + 1, self.current - 1)
+            .substring(self.start, self.current)
             .to_string();
 
         self.add_token_1(TokenType::NUMBER, literal)

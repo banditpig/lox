@@ -5,12 +5,15 @@ mod tokens;
 mod parser;
 
 use scanner::*;
+use parser::*;
 
 use std::{
     env, fs,
     io::{self, Write},
     process::exit,
 };
+
+use crate::exprs::AstPrinter;
 static mut HAD_ERROR: bool = false;
 
 
@@ -46,7 +49,17 @@ fn run_prompt() {
 }
 fn run(code: &String) {
     let mut s = Scanner::new(code.to_owned());
+
     s.scan_tokens();
+    println!("{:?}", s.tokens);
+
+    let mut printer = AstPrinter;
+    let mut p = Parser::new(s.tokens);
+    let expr = p.expression();
+
+    let txt = printer.print(&expr);
+    println!("{}", txt);
+   
 
     unsafe {
 
