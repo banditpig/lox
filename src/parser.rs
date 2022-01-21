@@ -36,6 +36,7 @@ impl Parser {
         if self.is_at_end() {
             return false;
         }
+        println!("checking type {:?}",&self.peek().tok_type);
         return &self.peek().tok_type == tt;
     }
     fn matches(&mut self, token_types: &Vec<TokenType>) -> bool {
@@ -52,6 +53,7 @@ impl Parser {
         return self.tokens[self.current].clone();
     }
     fn comparison(&mut self) -> Expr {
+        
         let mut expr = self.term();
         while self.matches(&vec![
             TokenType::GREATER,
@@ -101,7 +103,7 @@ impl Parser {
 
     fn factor(&mut self) -> Expr {
         let mut expr = self.unary();
-        while self.matches(&vec![TokenType::MINUS, TokenType::PLUS]) {
+        while self.matches(&vec![TokenType::SLASH, TokenType::STAR]) {
             let operator = self.previous();
             let right = self.unary();
             expr = Expr::Binary {
@@ -163,6 +165,7 @@ impl Parser {
             return Expr::Grouping{ expression: Box::new(expr) }
         }
     
+        //?????
         return Expr::Literal {
             literal: LiteralValue::Boolean(false),
         };
