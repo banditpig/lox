@@ -57,7 +57,7 @@ impl Scanner {
 
         match c {
             ' ' | '\r' | '\t' => (),
-            '\n' => self.line = self.line + 1,
+            '\n' => self.line += 1,
             '(' => self.add_token(TokenType::LEFT_PAREN),
             ')' => self.add_token(TokenType::RIGHT_PAREN),
             '{' => self.add_token(TokenType::LEFT_BRACE),
@@ -122,11 +122,11 @@ impl Scanner {
         self.tokens.push(token);
     }
     fn advance(&mut self) -> char {
-        self.current = self.current + 1;
+        self.current += 1;
         return self.source.chars().nth(self.current - 1).unwrap();
     }
     fn is_at_end(&self) -> bool {
-        return self.current >= self.source.len();
+        self.current >= self.source.len()
     }
     fn match_char(&mut self, ch: char) -> bool {
         if self.is_at_end() {
@@ -135,7 +135,7 @@ impl Scanner {
         if self.source.chars().nth(self.current).unwrap() != ch {
             return false;
         }
-        self.current = self.current + 1;
+        self.current += 1;
         return true;
     }
     fn peek(&self) -> char {
@@ -147,7 +147,7 @@ impl Scanner {
     fn string(&mut self) {
         while self.peek() != '"' && !self.is_at_end() {
             if self.peek() == '\n' {
-                self.line = self.line + 1;
+                self.line += 1;
             }
             self.advance();
         }
@@ -200,11 +200,11 @@ impl Scanner {
         return self.source.chars().nth(self.current + 1).unwrap();
     }
     fn is_alpha(&self, ch: char) -> bool {
-        return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || ch == '_';
+        ('a'..='z').contains(&ch) || ('A'..='Z').contains(&ch) || ch == '_'
     }
 
     fn is_alphanumeric(&self, ch: char) -> bool {
-        return self.is_digit(ch) || self.is_alpha(ch);
+        self.is_digit(ch) || self.is_alpha(ch)
     }
 
     fn identifier(&mut self) {

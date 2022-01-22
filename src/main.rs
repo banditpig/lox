@@ -47,7 +47,7 @@ fn run_prompt() {
         run(input);
     }
 }
-fn run(code: &String) {
+fn run(code: &str) {
     let mut s = Scanner::new(code.to_owned());
 
     s.scan_tokens();
@@ -66,7 +66,7 @@ fn run(code: &String) {
         HAD_ERROR = false;
     }
 }
-fn run_file(path: &String) {
+fn run_file(path: &str) {
     let code = fs::read_to_string(path).expect("Ooops");
 
     run(&code);

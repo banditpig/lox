@@ -1,5 +1,6 @@
 
 use crate::tokens::*;
+
 pub trait Visitor<T> {
     fn visit_binary(&mut self, left: &Expr, op: &Token, right: &Expr) -> T;
     fn visit_unary(&mut self, op: &Token, right: &Expr) -> T;
@@ -68,40 +69,40 @@ impl AstPrinter {
     }
     fn parenthesize(&mut self, name: String, exprs: Vec<&Expr>) -> String{ 
         let mut rslt = String::new();
-        rslt.push_str("(");
+        rslt.push('(');
         rslt.push_str(&name);
         
         for e in exprs{
-            rslt.push_str(" ");
+            rslt.push(' ');
             rslt.push_str(&e.accept(self))
         }
-        rslt.push_str(")");
-        return rslt;
+        rslt.push(')');
+        rslt
     }
    
 }
 impl Visitor<String> for AstPrinter{
     fn visit_binary(&mut self, left: &Expr, op: &Token, right: &Expr) -> String {
-        return self.parenthesize(op.lexeme.clone(), vec![left, right]);
+        self.parenthesize(op.lexeme.clone(), vec![left, right])
     }
 
     fn visit_unary(&mut self, op: &Token, right: &Expr) -> String {
         //return parenthesize(expr.operator.lexeme, expr.right);
-        return self.parenthesize(op.lexeme.to_string(), vec![right])
+        self.parenthesize(op.lexeme.to_string(), vec![right])
     }
 
     fn visit_grouping(&mut self, exp: &Expr) -> String {
-        return self.parenthesize("Group".to_string(), vec![exp])
+        self.parenthesize("Group".to_string(), vec![exp])
 
     }
 
     fn visit_literal(&mut self, exp: &LiteralValue) -> String {
-        return match exp{
+        match exp{
             LiteralValue::Boolean(b) => b.to_string(),
             LiteralValue::Null => "Null".to_string(),
             LiteralValue::Number(n) => n.to_string(),
             LiteralValue::String(s) => s.to_string(),
-        };
+        }
     }
 }
 

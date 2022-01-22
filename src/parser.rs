@@ -24,12 +24,12 @@ impl Parser {
             let right = self.comparison();
             expr = Expr::Binary {
                 left: Box::new(expr),
-                operator: operator,
+                operator,
                 right: Box::new(right),
             };
         }
 
-        return expr;
+        expr
     }
 
     fn check_type(&mut self, tt: &TokenType) -> bool {
@@ -37,7 +37,7 @@ impl Parser {
             return false;
         }
         println!("checking type {:?}",&self.peek().tok_type);
-        return &self.peek().tok_type == tt;
+        &self.peek().tok_type == tt
     }
     fn matches(&mut self, token_types: &Vec<TokenType>) -> bool {
         for tt in token_types {
@@ -46,11 +46,11 @@ impl Parser {
                 return true;
             }
         }
-        return false;
+        false
     }
 
     fn peek(&mut self) -> Token {
-        return self.tokens[self.current].clone();
+        self.tokens[self.current].clone()
     }
     fn comparison(&mut self) -> Expr {
         
@@ -65,11 +65,11 @@ impl Parser {
             let right = self.term();
             expr = Expr::Binary {
                 left: Box::new(expr),
-                operator: operator,
+                operator,
                 right: Box::new(right),
             };
         }
-        return expr;
+        expr
     }
     fn term(&mut self) -> Expr {
         let mut expr = self.factor();
@@ -78,27 +78,27 @@ impl Parser {
             let right = self.factor();
             expr = Expr::Binary {
                 left: Box::new(expr),
-                operator: operator,
+                operator,
                 right: Box::new(right),
             };
         }
 
-        return expr;
+        expr
     }
 
     fn advance(&mut self) -> Token {
         if !self.is_at_end() {
-            self.current = self.current + 1;
+            self.current += 1;
         }
-        return self.previous();
+        self.previous()
     }
 
     fn previous(&mut self) -> Token {
-        return self.tokens[self.current - 1].clone();
+        self.tokens[self.current - 1].clone()
     }
 
     fn is_at_end(&mut self) -> bool {
-        return self.peek().tok_type == TokenType::EOF;
+        self.peek().tok_type == TokenType::EOF
     }
 
     fn factor(&mut self) -> Expr {
@@ -108,12 +108,12 @@ impl Parser {
             let right = self.unary();
             expr = Expr::Binary {
                 left: Box::new(expr),
-                operator: operator,
+                operator,
                 right: Box::new(right),
             };
         }
 
-        return expr;
+        expr
     }
 
     fn unary(&mut self) -> Expr {
@@ -121,11 +121,11 @@ impl Parser {
             let operator = self.previous();
             let right = self.unary();
             return Expr::Unary {
-                operator: operator,
+                operator,
                 right: Box::new(right),
             };
         }
-        return self.primary();
+        self.primary()
     }
 
     fn primary(&mut self) -> Expr {
@@ -146,7 +146,7 @@ impl Parser {
         }
         if self.matches(&vec![TokenType::NUMBER]) {
             let xx = self.previous().literal;
-            println!("NUMBER {:?}", xx);
+           
             let n:f64 = xx.parse::<f64>().unwrap();//self.previous().literal.parse().unwrap();
             return Expr::Literal {
                 literal: LiteralValue::Number(n),
@@ -165,16 +165,14 @@ impl Parser {
             return Expr::Grouping{ expression: Box::new(expr) }
         }
     
-        //?????
-        return Expr::Literal {
-            literal: LiteralValue::Boolean(false),
-        };
+        //????
+        panic!("{:?}", "Expected expression");
     }
 
     fn consume(&mut self, tt: &TokenType, msg: String) -> Token{
 
         if self.check_type(tt){
-            return self.advance()
+            self.advance()
         }else{
             panic!("{:?}", msg);
         }
