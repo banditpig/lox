@@ -1,11 +1,11 @@
 #![allow(dead_code)]
 mod exprs;
+mod parser;
 mod scanner;
 mod tokens;
-mod parser;
 
-use scanner::*;
 use parser::*;
+use scanner::*;
 
 use std::{
     env, fs,
@@ -16,17 +16,16 @@ use std::{
 use crate::exprs::AstPrinter;
 static mut HAD_ERROR: bool = false;
 
-
 fn main() {
     let args: Vec<String> = env::args().collect();
     println!("{:?}", args);
-    if args.len() > 2 {
-        println!("Usage: jlox [script]");
-        exit(1);
-    } else if args.len() == 2 {
-        run_file(args.get(1).unwrap());
-    } else {
-        run_prompt();
+    match args.len() {
+        1 => run_prompt(),
+        2 => run_file(args.get(1).unwrap()),
+        _ => {
+            println!("Usage: jlox [script]");
+            exit(1);
+        }
     }
 }
 
@@ -59,10 +58,8 @@ fn run(code: &str) {
 
     let txt = printer.print(&expr);
     println!("{}", txt);
-   
 
     unsafe {
-
         HAD_ERROR = false;
     }
 }

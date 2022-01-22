@@ -136,7 +136,7 @@ impl Scanner {
             return false;
         }
         self.current += 1;
-        return true;
+        true
     }
     fn peek(&self) -> char {
         if self.is_at_end() {
@@ -169,7 +169,7 @@ impl Scanner {
     fn is_digit(&self, ch: char) -> bool {
         match ch {
             '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' => return true,
-            _ => return false,
+            _ => false,
         }
     }
     fn number(&mut self) {
